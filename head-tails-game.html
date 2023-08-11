@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Head-Tails-Game</title>
+    <style>
+      button {
+        height: 70px;
+        width: 150px;
+        text-align: center;
+        text-transform: uppercase;
+        transition: 0.5s;
+        background-size: 200% auto;
+        color: navy;
+        font-weight: 500;
+        /* text-shadow: 0px 0px 10px rgba(0,0,0,0.2);*/
+        box-shadow: 0 0 20px #eee;
+        border-radius: 10px;
+        background-image: linear-gradient(
+          to right,
+          #fbc2eb 0%,
+          #a6c1ee 51%,
+          #fbc2eb 100%
+        );
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-position: right center; /* change the direction of the change here */
+      }
+    </style>
+  </head>
+  <body style="font-family: Arial, Helvetica, sans-serif">
+    <p>Guess is it Heads or Tails?</p>
+    <button onclick="playGuess('Heads')">Heads</button>
+    <button onclick="playGuess('Tails')">Tails</button>
+    <button onclick="resetScore()">Reset Score</button>
+    <p class="js-display-score"></p>
+    <p class="js-display-result"></p>
+    <script>
+      /*
+      -> set score from local storage.
+      -> if no score is found from storage then set a default value
+      -> user guess example = heads
+      -> computer guess
+      -> conditiona. win or loss.
+      -> if win update the score.
+      -> set the score into the localStorage
+      -> alert result
+      */
+
+      localStorage.getItem("scores");
+      scoreObject = JSON.parse(localStorage.getItem("scores"));
+
+      let score = scoreObject || { wins: 0, losses: 0 }; //DEFAULT OPERATOR
+      console.log(score);
+      let resultHTML = document.body.querySelector(".js-display-result");
+      let scoreHTML = document.body.querySelector(".js-display-score");
+      scoreHTML.innerHTML = `Current Scores: Wins = ${score.wins} and Losses = ${score.losses}`;
+
+      function playGuess(guess) {
+        let userGuess = guess;
+        let randomNumber = Math.random();
+        let computer = Math.ceil(randomNumber * 2);
+
+        // condition using TERNARY OPERATOR
+        computer === 1 ? (computer = "Heads") : (computer = "Tails");
+
+        let result = "";
+
+        if (userGuess === computer) {
+          result = `You Win!`;
+          score.wins++;
+        } else {
+          result = `You Lose!`;
+          score.losses++;
+        }
+
+        // store score in local storage
+        let scoreJSON = JSON.stringify(score);
+        localStorage.setItem("scores", scoreJSON);
+
+        resultHTML.innerHTML = `${result} You chose ${userGuess} and coin shows ${computer}.
+Wins: ${score.wins}, Losses: ${score.losses}`;
+        scoreHTML.innerHTML = `Current Scores: Wins = ${score.wins} and Losses = ${score.losses}`;
+      }
+
+      function resetScore() {
+        score.wins = 0;
+        score.losses = 0;
+        localStorage.removeItem("scores");
+        resultHTML.innerHTML = `Scores were reset.`;
+        scoreHTML.innerHTML = `Current Scores: Wins = ${score.wins} and Losses = ${score.losses}`;
+      }
+    </script>
+  </body>
+</html>
